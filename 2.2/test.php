@@ -1,71 +1,97 @@
 <?php
-$directory = './json';
-$list_file = scandir($directory, 1);
-$amount_of_elements = count($list_file);
-$test_value = $amount_of_elements - 2;
-$error = [];
-function form_number() {
-    echo '<form enctype="multipart/form-data" action="test.php" method="GET">';
-    echo '<lable for="number">Введите номер формы:</lable>';
-    echo '<input id="number" name="form" type="number" placeholder="">';
-    echo '<input type="submit" value="Открыть"></form>';
-};
+	//получаем в массив $filelist список всех тестов в папке 
+	$dir = getcwd() . '/tests/';
+	$filelist = scandir($dir, 1);
+	
+	//получаем текущий $id файла теста для отображения в форме
+	if (isset($_POST['test_id']))
+	{	
+		$id = htmlspecialchars(stripslashes($_POST['test_id']));
+		
+	} elseif (isset($_GET['test_id'])&&(is_numeric($_GET['test_id'])))
+	{
+		$id = htmlspecialchars(stripslashes($_GET['test_id']))-1;
+	} 
+	else 
+	{
+		die("Некорретные данные!");
+	}
+	
+	$id = (intval($id));
+	
+	if ($id <= (count($filelist)-3))
+	{
+		//читаем в массив содержимое файла теста
+		$json = $dir . "$filelist[$id]";
+		$test = json_decode(file_get_contents($json), true);
+	
+	if (isset($_POST['test_id']))
+	{	
+		//если данные для проверки теста пользователем отправлены, то проверяем ответы пользователя
+		if (isset($_POST['userAnswer']))
+		{
+			$userAnswer = $_POST['userAnswer'];
+			if(count($userAnswer) === count($test))	
+			{	
+				$result = 0;
+				foreach ($test as $key => $value)
+				{	
+					if ($value['correct'] == $userAnswer[$key])
+					{
+						$result++;
+					}
+				}
+				echo "Ваш результат: $result правильных из " . count($userAnswer);
+			} else {
+    			echo "Не все поля формы заполнены. Повторите ввод!";
+    		}
+    	} else {
+    		echo "Введите ответы!";
+    	}
+	}
+	} else {
+		die("Файл не существует!<p><a href=\"list.php\">Выбрать другой тест</a></p>");
+	}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Домашние задание</title>
+	<meta charset="utf-8">
+	<title>Окно создания теста</title>
+	<style type="text/css">
+	div {
+   		background: #fff; /* Цвет фона */
+    	color: #000; /* Цвет текста */
+    	padding: 5px; /* Поля вокруг текста */
+        margin-top: 5px; /* Отступ сверху */
+    }
+    li {
+    	list-style-type: none;
+    }
+  
+	</style>
+
 </head>
 <body>
-<div class="form">
-
-    <?php 
-    if (isset($_GET['form']) === false) { 
-        form_number();
-    } elseif (isset($_GET['form']) === true) {
-        if ($_GET['form'] >  $test_value ) {
-            echo $error [] = 'Форма с таким номером не существует';
-            form_number();
-            die;
-        } elseif ($_GET['form'] <= 0 ){
-            echo $error [] = 'Форма с таким номером не существует';
-            form_number();
-            die;
-        } else {
-            foreach ($list_file as $id_data => $data) {
-                if ($id_data === $_GET['form'] - 1) {
-                    $array_form_json = file_get_contents('http://university.netology.ru/u/meshcheryakov/back/2.2/json/'.$data);
-                    $array_form = json_decode($array_form_json, true);
-                    break;
-                };
-            };
-            echo '<form enctype="multipart/form-data" action="test.php?form='.$_GET['form'].'" method="POST">';
-            echo '<h4>'.$array_form["name"].'</h4>';
-            $id = 0;
-            $number_array_form = (count($array_form) - 2) / 3;
-            for ( $x=0; $x < $number_array_form; ++$x) {
-    ?>
-                <lable for="input<?= $id ?>"><?= $array_form ['text'.$id] ?></lable><br />
-                <input id="input<?= $id ?>" name="<?= 'name'.$id ?>" type="<?= $array_form ['type'.$id] ?>" placeholder="<?= $array_form ['placeholder'.$id] ?>" ><br />
-    <?php
-                ++$id;
-            };
-            echo '<br /><input type="submit" value="отправить"></form>';
-        };
-        echo '<p><a href="list.php">Вернутся к списку форм</a></p>';
-    };
-    if (isset($_POST['name'.($id-1)]) === true) {
-        if ($_POST['name'.($id-1)] === $array_form["result"]){
-            echo  'Форма успешно отправлена!';
-        } else {
-            echo  'Неправильный ответ!';
-        }
-    };
-    ?>
-
+<form action="test.php" method="post">
+<div>
+<fieldset>
+    <legend><h3>Тест <?php echo $filelist[$id]?></h3></legend>
+	<input name="test_id" type="hidden" value="<?php echo $id ?>">
+	<?php
+	foreach ($test as $key => $value) 
+	{	
+		echo "<strong> $key. ". $value['textQwestion'] . "</strong>";
+		foreach ($value['answer'] as $k => $val) 
+		{
+			echo  "<li><input type=\"radio\" name=\"userAnswer[" . $key . "]\" value=\"" . $k . "\" required>$val</li>";
+		}
+	}
+	?>
+<input type="submit" value="Отправить">
+<p><a href="list.php">Выбрать другой тест</a></p>
 </div>
+</form>
 </body>
 </html>

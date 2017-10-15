@@ -1,8 +1,32 @@
 <?php
-$directory = './json';
-$list_file = scandir($directory, 1);
-$amount_of_elements = count($list_file);
-$id_file = 1;
+
+$dir = getcwd() . '/tests/';
+$filelist = scandir($dir, 1);
+
+//если в папке есть файлы с тестами, то выводим их нумерованным списком
+function GetList($filelist)
+{   
+    if (!$filelist) 
+        {
+            echo "<h3>Тесты не найдены!</h3>";
+        } else {
+            echo "<h3>Список тестов:</h3><ol>";
+            for ($i = 0; $i < (count($filelist)-2); $i++)
+                {   
+                    echo '<li>' . $filelist[$i] . '</li>';
+                 };
+            echo "</ol>"; 
+        }
+}
+//получаем содержимое теста по его номеру ($id)
+function GetTest($filelist)
+{   
+    for ($i = 0; $i < (count($filelist)-2); $i++)
+        {   
+            $id = $i+1;
+            echo "<option value=\"$id\">" . $filelist[$i] . "</option>";
+        };
+}
 ?>
 
 <!DOCTYPE html>
@@ -10,29 +34,23 @@ $id_file = 1;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Домашние задание 2.2</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Список тестов</title>
 </head>
 <body>
-<div class="form">
+<span>
+<?php GetList($filelist)?>
+<form action="test.php" method="get">
+    <fieldset>
+        <legend>Выберите тест для загрузки:</legend>
+        <select name="test_id">
+        <?php GetTest($filelist) ?>
+        </select>
+       <input type="submit" value="Отправить">
+    </fieldset>
+</form>
+<p><a href="admin.php">Загрузить новый тест</a></p>
 
-    <?php
-        foreach ($list_file as $id_data => $data) {
-            if ($id_data < $amount_of_elements - 2) {
-                $array_form_json = file_get_contents('http://university.netology.ru/u/meshcheryakov/back/2.2/json/'.$data);
-                $array_form = json_decode($array_form_json, true);
-                echo '<p>' .$id_file .') ' .$array_form['name'] .'</p>';
-                ++$id_file;
-            };
-        };
-    ?>
-
-    <form enctype="multipart/form-data" action="test.php" method="GET">
-        <lable for="number">Введите номер формы:</lable>
-        <input id="number" name="form" type="number" placeholder="">
-        <input type="submit" value="Открыть">
-    </form>
-    <p><a href="admin.php">Вернутся к главной странице</a></p>
-
-</div>
+</span>
 </body>
 </html>
