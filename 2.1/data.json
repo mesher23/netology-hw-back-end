@@ -1,0 +1,22 @@
+
+[{
+  "firstName": "Иван",
+  "lastName": "Иванов",
+  "address": "г.Москва, ул. Алиева,2",
+  "phoneNumber": "812 123-1234"
+}, {
+  "firstName": "Пётр",
+  "lastName": "Петров",
+  "address": "г.Екатеринбург, ул. Гастелло,10",
+  "phoneNumber": "812 123-4321"
+}, {
+  "firstName": "Денис",
+  "lastName": "Денисов",
+  "address": "г.Тюмень, ул. Победы,3",
+  "phoneNumber": "812 321-1234"
+}, {
+  "firstName": "Алексей",
+  "lastName": "Сидоров",
+  "address": "г.Новосибирск, ул. 8 марта,8",
+  "phoneNumber": "812 321-4321"
+}]
