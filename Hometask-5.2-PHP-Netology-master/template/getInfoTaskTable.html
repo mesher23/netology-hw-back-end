@@ -1,0 +1,43 @@
+<div id="content" class="container" >
+	<table id="tasks" class="tasktable">
+		<thead>
+			<tr>
+				<th>Описание задачи</th>
+				<th>Дата добавления</th>
+				<th>Статус</th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th>Ответственный</th>
+				<th>Автор</th>
+				<th>Закрепить за пользователем</th>
+			</tr>
+		</thead>
+		<tbody>
+		 {% set formId = 0 %} {% for row in result %}  {% if row.is_done %} {% set change = "Доделать" %} {% else %} {% set change = "Выполнить" %} {% endif %}
+			<tr>
+				<td id="id{{row.id}}">{{row.description}}</td>
+				<td>{{row.date|date('j M, Y G:i')}}</td>
+				<td style="color:{% if row.is_done %} {{'green'}} {% else %} {{'orange'}} {% endif %}"> {% if row.is_done %} {{'Выполнено'}} {% else %} {{'В процессе'}} {% endif %}</td>
+				<td><input type="button" onclick="openChangeForm('{{row.description}}', {{row.id}})" value="Изменить"></td>
+				<td><input type="button" onclick="changeStatus({{row.id}}, {% if row.is_done %} {{0}} {% else %} {{1}} {% endif %})" value="{{change}}"</td>
+				<td><input type="button" onclick="deleteTask({{row.id}})" value="Удалить"></td>
+				<td>{{row.userInCharge}}</td>
+				<td> {% if row.author == currentUser %} {{'Вы'}} {% else %} {{row.author}} {% endif %}</td>
+				<td>
+					<form id="form{{formId}}">
+						<select name="assignedUserId">
+							{% for oneUser in userList %} 
+							<option value="{{oneUser.id}}" >{{oneUser.login}}</option>
+							{% endfor %}
+							
+						</select>
+
+						<input type="button" onclick="setUserInCharge('form{{formId}}', {{row.id}})" value="Назначить">
+					</form>
+				</td>
+			</tr>
+		{% set formId = formId + 1 %} {% endfor %}
+		</tbody>
+	</table>
+</div>

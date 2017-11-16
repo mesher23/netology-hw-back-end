@@ -1,0 +1,30 @@
+<div id="content" class="container" >
+	<table class="tasktable">
+		<thead>
+			<tr>
+				<th>Описание задачи</th>
+				<th>Дата добавления</th>
+				<th>Статус</th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th>Ответственный</th>
+				<th>Автор</th>
+			</tr>
+		</thead>
+		<tbody>
+		 {% for row in result %}  {% if row.is_done %} {% set change = "Доделать" %} {% else %} {% set change = "Выполнить" %} {% endif %}
+			<tr>
+				<td id="{{row.id}}">{{row.description}}</td>
+				<td>{{row.date|date('j M, Y G:i')}}</td>
+				<td style="color:{% if row.is_done %} {{'green'}} {% else %} {{'orange'}} {% endif %}"> {% if row.is_done %} {{'Выполнено'}} {% else %} {{'В процессе'}} {% endif %}</td>
+				<td><input type="button" onclick="openChangeForm('{{row.description}}', {{row.id}})" value="Изменить"></td>
+				<td><input type="button" onclick="changeStatus({{row.id}}, {% if row.is_done %} {{0}} {% else %} {{1}} {% endif %})" value="{{change}}"></td>
+				<td><input type="button" onclick="deleteTask({{row.id}})" value="Удалить"></td>
+				<td> {% if row.userInCharge == currentUser %} {{'Вы'}} {% else %} {{row.userInCharge}} {% endif %}</td>
+				<td>{{row.author}}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>

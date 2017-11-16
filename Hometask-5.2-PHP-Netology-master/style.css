@@ -1,0 +1,63 @@
+html {
+	font-family: sans-serif;
+	font-weight: 300;
+	background-color: #F5F5F5;
+}
+
+body {
+	padding-left: 30px;
+}
+
+.descriptionfield {
+	height: 35px;
+	width:200px;
+	vertical-align: top;
+}
+
+.container {
+	margin-top: 30px;
+	background-color: white;
+	padding: 30px;
+	display: inline-block;
+	border-radius: 5px;
+}
+
+.tasktable {
+	border-collapse: collapse;
+}
+
+.tasktable th {
+	padding-bottom: 15px;
+}
+
+.tasktable td {
+	padding: 10px;
+	border-bottom: 1px solid black;
+}
+
+.tasktable tr:last-child td {
+	border-bottom: 0px;
+}
+
+.popupform {
+
+}
+
+.a {
+	color: white;
+	height: 500px;
+	width: 500;
+	background-color: rgba(0,0,0, 0.5);
+	border-radius: 5px;
+	padding: 10px;
+	box-shadow: 0 0 15px black;
+}
+
+.taskaddform {
+	display: inline-block;
+	padding: 10px;
+	border-radius: 5px;
+	background-color: white;
+	margin-top: 30px;
+	margin-bottom: 20px;
+}
